@@ -1,0 +1,23 @@
+.login {
+  height: 100vh;
+  background-color: #91d5ff;
+}
+.login .login-form {
+  z-index: 99;
+  width: 380px;
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 2px #ccc;
+  margin: 1em 0;
+  padding: 1em 2em;
+  margin: 0 auto;
+  position: relative;
+  top: 30%;
+  overflow: hidden;
+}
+.login .login-form .forget {
+  float: right;
+}
+.login .login-form .register {
+  float: right;
+}
