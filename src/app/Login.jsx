@@ -12,14 +12,24 @@ export default function Login(props) {
     const [state, setState] = useState({
         username: '',
         password: '',
-        rememberMe: false,
+        rememberMe: true,
     });
     const handleChange = (e) => {
-        const { name, value, checked: rememberMe } = e.target;
+        const { name, value} = e.target;
         setState(state => {
             return {
                 ...state,
                 [name]: value
+            };
+        });
+    };
+    const handleCheckChange = (e) => {
+        const { checked } = e.target;
+        console.log(checked);
+        setState(state => {
+            return {
+                ...state,
+                rememberMe: checked
             };
         });
     };
@@ -134,6 +144,8 @@ export default function Login(props) {
                     ]}
                 >
                     <Input
+                        value={state.username}
+                        name='username'
                         prefix={<UserOutlined className="site-form-item-icon" />}
                         placeholder="用户名"
                         allowClear
@@ -150,6 +162,8 @@ export default function Login(props) {
                     ]}
                 >
                     <Input.Password
+                        name="username'"
+                        value={state.password}
                         maxLength={16}
                         allowClear
                         prefix={<LockOutlined className="site-form-item-icon" />}
@@ -159,7 +173,7 @@ export default function Login(props) {
                     />
                 </Form.Item>
                 <Form.Item className="remember-forget">
-                    <Checkbox onChange={handleChange}>
+                    <Checkbox checked={state.rememberMe} onChange={handleCheckChange}>
                         记住我
                     </Checkbox>
                     <a href="javascript:void 0;" className="forget">
