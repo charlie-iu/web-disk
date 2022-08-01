@@ -1,15 +1,18 @@
-.header {
+#root {
+  height: 100%;
+}
+#root .header {
   background-color: #91d5ff;
 }
-.header .logo {
+#root .header .logo {
   position: relative;
   left: -70px;
 }
-.header .logo img {
+#root .header .logo img {
   width: 142px;
   height: 68px;
 }
-.header .logo .title {
+#root .header .logo .title {
   font-size: 24px;
   font-weight: bold;
   color: #333;

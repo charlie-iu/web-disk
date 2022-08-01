@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import {useNavigate} from 'react-router-dom';
 import { Form, Input, Button, Checkbox, message } from 'antd';
 import { UserOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import store from 'store';
@@ -14,6 +15,7 @@ export default function Login(props) {
         password: '',
         rememberMe: true,
     });
+    const navigate = useNavigate();
     const handleChange = (e) => {
         const { name, value} = e.target;
         setState(state => {
@@ -25,7 +27,6 @@ export default function Login(props) {
     };
     const handleCheckChange = (e) => {
         const { checked } = e.target;
-        console.log(checked);
         setState(state => {
             return {
                 ...state,
@@ -40,7 +41,7 @@ export default function Login(props) {
             const tokenBody = res.token;
             const token = `${tokenHeader} ${tokenBody}`; //中间需要有一个空格分开
             store.set('net_disk_token', token);
-            props.history.push('/');
+            navigate('/');
             message.success('欢迎登录!');
         } catch (err) {
             return Promise.reject(err);
