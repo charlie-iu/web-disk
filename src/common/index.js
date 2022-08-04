@@ -1,3 +1,8 @@
 import Ajax from "./Ajax";
-
-export { Ajax };
+import Utils from "./Utils";
+import C from './BaseConstant';
+export { 
+    Ajax, 
+    Utils,
+    C
+};

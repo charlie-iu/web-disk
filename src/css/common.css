@@ -2,7 +2,7 @@
   height: 100%;
 }
 #root .header {
-  background-color: #91d5ff;
+  background-color: #bae7ff;
 }
 #root .header .logo {
   position: relative;
@@ -16,4 +16,11 @@
   font-size: 24px;
   font-weight: bold;
   color: #333;
+}
+#root .sider-content-layout {
+  background-color: #fff;
+}
+#root .sider-content-layout .sider {
+  height: 100%;
+  margin-right: 8px;
 }
