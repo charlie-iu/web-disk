@@ -27,11 +27,11 @@ const getFoldersAndFilesRequest = (data = {}) =>
     data,
   });
 
-const removeFileAndFolderRequest = (data = {}) =>
+const removeFileAndFolderRequest = (params = {}) =>
   ajax({
     url: "/netdisk/removeFileAndFolder",
     method: "post",
-    data,
+    params,
   });
 
 const getPictureList = (data = {}) =>

@@ -1,9 +1,9 @@
 import React, { useEffect, useReducer } from 'react';
-import { Table, Space, Popconfirm, Button } from 'antd';
-import { CloudDownloadOutlined } from "@ant-design/icons";
+import { Table, Space, Popconfirm, message } from 'antd';
+import { CloudDownloadOutlined, DeleteOutlined } from "@ant-design/icons";
 import _ from 'lodash';
 import { Ajax, Utils } from '../../common';
-import { ShowFileName, DownLoad } from '../../component';
+import { ShowFileName } from '../../component';
 import Reducer from './Reducer';
 
 export default function AllFileList(props) {
@@ -61,6 +61,7 @@ export default function AllFileList(props) {
       payload: pageSize,
     });
   };
+
   const pagination = {
     size: 'small',
     showSizeChanger: true,
@@ -77,9 +78,32 @@ export default function AllFileList(props) {
     },
     onShowSizeChange
   };
+
   const handleDownload = (id) => {
     window.open(`http://47.119.129.231:8082/netdisk/download?fileId=${id}`);
-  }
+  };
+
+  const handleDelete = (data) => {
+    const type = data.sourceType;
+    const row = {
+      fileIds: '',
+      folderIds: '',
+    }
+    if (type === 'FOLDER') { // 文件夹
+      row.folderIds = data.dataId;
+      Ajax.removeFileAndFolderRequest(row).then(res => {
+        message.success('删除成功');
+        initEntry();
+      });
+    } else {
+      row.fileIds = data.dataId;
+      Ajax.removeFileAndFolderRequest(row).then(res => {
+        message.success('删除成功');
+        initEntry();
+      });
+    }
+  };
+
   const columns = [{
     title: '序号',
     width: 60,
@@ -103,25 +127,42 @@ export default function AllFileList(props) {
     render: (id, record) => {
       return (
         <Space>
+          {record.sourceType !== 'FOLDER' && (
+            <Popconfirm
+              title="确认下载?"
+              onConfirm={() => handleDownload(id)}
+              okText="确认"
+              cancelText="取消"
+            >
+              <a
+                href='javascript: void 0;'
+              >
+                下载 <CloudDownloadOutlined />
+              </a>
+            </Popconfirm>
+          )
+          }
           <Popconfirm
-            title="确认下载?"
-            onConfirm={() => handleDownload(id)}
+            title="确认删除?"
+            onConfirm={() => handleDelete(record)}
             okText="确认"
             cancelText="取消"
           >
             <a
               href='javascript: void 0;'
             >
-              <CloudDownloadOutlined />下载
+              删除 <DeleteOutlined />
             </a>
           </Popconfirm>
-          
+
         </Space>
       )
     }
   }
-  ]
+  ];
+
   const tableProps = {
+    size: 'small',
     columns,
     rowSelection,
     pagination,
