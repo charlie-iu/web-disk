@@ -39,6 +39,9 @@ const Reducer = (state, action) => {
     case "UPDATE_FORM_VALUE":
       nextState[payload.name] = payload.value;
       return nextState;
+    case "UPDATE_PERCENT":
+      nextState.percent = payload;
+      return nextState;
     default:
       return nextState;
   }

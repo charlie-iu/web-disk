@@ -1,11 +1,12 @@
 import React, { useEffect, useReducer } from 'react';
-import { Table, Space, Popconfirm, message, Button, Modal, Form, Input } from 'antd';
+import { Table, Space, Popconfirm, message, Button, Modal, Form, Input, Progress } from 'antd';
 import { CloudDownloadOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import _ from 'lodash';
 import { Ajax, Utils, C } from '../../common';
-import { ShowFileName } from '../../component';
+import { ShowFileName, MyUpload } from '../../component';
 import Reducer from './Reducer';
 
+const myContext = React.createContext(null);
 export default function AllFileList(props) {
   const [state, dispatch] = useReducer(Reducer, {
     selectedRowKeys: [],
@@ -16,7 +17,8 @@ export default function AllFileList(props) {
     modalAction: '',
     modalData: {},
     showModal: false,
-    newFolderName: ''
+    newFolderName: '',
+    percent: 0
   });
 
   const initEntry = () => {
@@ -294,38 +296,48 @@ export default function AllFileList(props) {
 
   return (
     <>
-      {state.selectedRowKeys.length === 0 ? (
-        <Button
-          size="small"
-          disabled
-          className='multiple-delete'
-          shape='rounded'
-        >
-          批量删除 <DeleteOutlined />
-        </Button>
-      ) : (
-        <Popconfirm
-          title="确认批量删除所选文件?"
-          okText="确认"
-          cancelText="取消"
-          onConfirm={handleMultipleDelete}
-        >
+      <myContext.Provider value={dispatch}>
+        {state.selectedRowKeys.length === 0 ? (
           <Button
-            type="danger"
             size="small"
+            disabled
             className='multiple-delete'
             shape='rounded'
           >
             批量删除 <DeleteOutlined />
           </Button>
-        </Popconfirm>
-      )
+        ) : (
+          <Popconfirm
+            title="确认批量删除所选文件?"
+            okText="确认"
+            cancelText="取消"
+            onConfirm={handleMultipleDelete}
+          >
+            <Button
+              type="danger"
+              size="small"
+              className='multiple-delete'
+              shape='rounded'
+            >
+              批量删除 <DeleteOutlined />
+            </Button>
+          </Popconfirm>
+        )
+        }
+        <MyUpload
+          id={0} fileType={0}
+          initEntry={initEntry}
+          myContext={myContext}
+        />
+        {state.percent > 0 && state.percent < 99.99 && (
+          <Progress percent={state.percent} status="active" size="small" />
+        )}
+        <Table {...tableProps} />
+        <Modal {...modalProps} >
+          {modalSubItem}
+        </Modal>
+      </myContext.Provider>
 
-      }
-      <Table {...tableProps} />
-      <Modal {...modalProps} >
-        {modalSubItem}
-      </Modal>
     </>
   )
 }
