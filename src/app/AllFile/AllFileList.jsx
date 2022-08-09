@@ -3,7 +3,7 @@ import { Table, Space, Popconfirm, message, Button, Modal, Form, Input, Progress
 import { CloudDownloadOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import _ from 'lodash';
 import { Ajax, Utils, C } from '../../common';
-import { ShowFileName, MyUpload } from '../../component';
+import { ShowFileName, MyUpload, MyReName } from '../../component';
 import Reducer from './Reducer';
 
 const myContext = React.createContext(null);
@@ -171,10 +171,17 @@ export default function AllFileList(props) {
       folderId: modalData.dataId,
       folderName: state.newFolderName
     };
+
     if (params.folderName === '') {
       message.error('名称不能为空');
       return;
     }
+
+    if (modalData.name === params.folderName) {
+      message.warn('名称未变更');
+      return;
+    }
+
     Ajax.reName(params).then(res => {
       message.success('重命名成功');
       initEntry();
@@ -182,6 +189,8 @@ export default function AllFileList(props) {
         type: 'UPDATE_SHOW_MODAL',
         payload: false
       })
+    }).catch(err => {
+      console.log(err);
     });
   };
 
@@ -275,21 +284,9 @@ export default function AllFileList(props) {
         modalProps.title = '重命名';
         modalProps.onOk = handleReName
         modalSubItem = (
-          <Form
-            layout='vertical'
-          >
-            <Form.Item
-              label='名称'
-            >
-              <Input
-                size='small'
-                placeholder='输入文件夹名称'
-                name='newFolderName'
-                value={state.newFolderName}
-                onChange={(e) => handleChange(e)}
-              />
-            </Form.Item>
-          </Form>
+          <myContext.Provider value={dispatch}>
+            <MyReName value={state.newFolderName} myContext={myContext} />
+          </myContext.Provider>
         )
     }
   }
