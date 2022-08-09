@@ -1,8 +1,8 @@
 import React, { useEffect, useReducer } from 'react';
-import { Table, Space, Popconfirm, message, Button } from 'antd';
-import { CloudDownloadOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Table, Space, Popconfirm, message, Button, Modal, Form, Input } from 'antd';
+import { CloudDownloadOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import _ from 'lodash';
-import { Ajax, Utils } from '../../common';
+import { Ajax, Utils, C } from '../../common';
 import { ShowFileName } from '../../component';
 import Reducer from './Reducer';
 
@@ -13,6 +13,10 @@ export default function AllFileList(props) {
     total: 0,
     pageSize: 10,
     currentPage: 1,
+    modalAction: '',
+    modalData: {},
+    showModal: false,
+    newFolderName: ''
   });
 
   const initEntry = () => {
@@ -122,6 +126,63 @@ export default function AllFileList(props) {
     });
   };
 
+  const handleShowModal = (modalAction = '', modalData = {}) => {
+    dispatch({
+      type: 'UPDATE_MODAL_ACTION',
+      payload: modalAction
+    });
+    dispatch({
+      type: 'UPDATE_MODAL_DATA',
+      payload: modalData
+    });
+    dispatch({
+      type: 'UPDATE_SHOW_MODAL',
+      payload: true
+    });
+  };
+
+  const handleOk = () => {
+    dispatch({
+      type: 'UPDATE_SHOW_MODAL',
+      payload: false
+    });
+  };
+
+  const handleCancel = () => {
+    dispatch({
+      type: 'UPDATE_SHOW_MODAL',
+      payload: false
+    });
+  };
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    dispatch({
+      type: 'UPDATE_FORM_VALUE',
+      payload: { name, value }
+    });
+  };
+
+  const handleReName = () => {
+    const modalData = state.modalData;
+    const params = {
+      folderId: modalData.dataId,
+      folderName: state.newFolderName
+    };
+    if (params.folderName === '') {
+      message.error('名称不能为空');
+      return;
+    }
+    Ajax.reName(params).then(res => {
+      message.success('重命名成功');
+      initEntry();
+      dispatch({
+        type: 'UPDATE_SHOW_MODAL',
+        payload: false
+      })
+    });
+  };
+
   const columns = [{
     title: '序号',
     width: 60,
@@ -142,6 +203,7 @@ export default function AllFileList(props) {
   }, {
     title: '操作',
     dataIndex: 'dataId',
+    width: 200,
     render: (id, record) => {
       return (
         <Space>
@@ -160,7 +222,16 @@ export default function AllFileList(props) {
             </Popconfirm>
           )
           }
-          <Popconfirm
+          {record.sourceType === 'FOLDER' && (
+            <a
+              href='javascript: void 0;'
+              onClick={() => { handleShowModal(C.RE_NAME, record) }}
+            >
+              重命名 <EditOutlined />
+            </a>
+          )
+          }
+          {<Popconfirm
             title="确认删除?"
             onConfirm={() => handleDelete(record)}
             okText="确认"
@@ -172,7 +243,7 @@ export default function AllFileList(props) {
               删除 <DeleteOutlined />
             </a>
           </Popconfirm>
-
+          }
         </Space>
       )
     }
@@ -188,6 +259,38 @@ export default function AllFileList(props) {
     columns,
     rowKey: 'dataId'
   };
+
+  let modalSubItem = null;
+  let modalProps = {
+    visible: state.showModal,
+    onOk: handleOk,
+    onCancel: handleCancel
+  };
+
+  if (state.showModal) {
+    switch (state.modalAction) {
+      case C.RE_NAME:
+        modalProps.title = '重命名';
+        modalProps.onOk = handleReName
+        modalSubItem = (
+          <Form
+            layout='vertical'
+          >
+            <Form.Item
+              label='名称'
+            >
+              <Input
+                size='small'
+                placeholder='输入文件夹名称'
+                name='newFolderName'
+                value={state.newFolderName}
+                onChange={(e) => handleChange(e)}
+              />
+            </Form.Item>
+          </Form>
+        )
+    }
+  }
 
   return (
     <>
@@ -220,6 +323,9 @@ export default function AllFileList(props) {
 
       }
       <Table {...tableProps} />
+      <Modal {...modalProps} >
+        {modalSubItem}
+      </Modal>
     </>
   )
 }

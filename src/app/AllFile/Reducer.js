@@ -27,7 +27,18 @@ const Reducer = (state, action) => {
     case "UPDATE_PAGE_SIZE":
       nextState.pageSize = payload;
       return nextState;
-
+    case "UPDATE_MODAL_ACTION":
+      nextState.modalAction = payload;
+      return nextState;
+    case "UPDATE_MODAL_DATA":
+      nextState.modalData = payload;
+      return nextState;
+    case "UPDATE_SHOW_MODAL":
+      nextState.showModal = payload;
+      return nextState;
+    case "UPDATE_FORM_VALUE":
+      nextState[payload.name] = payload.value;
+      return nextState;
     default:
       return nextState;
   }

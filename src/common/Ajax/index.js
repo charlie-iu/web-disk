@@ -62,11 +62,11 @@ const addFolder = (data) =>
     data,
   });
 
-const rename = (data) =>
+const reName = (params = {}) =>
   ajax({
     url: "/netdisk/reNameFolder",
     method: "post",
-    data,
+    params,
   });
 
 const getNextFolderReq = (data = {}) =>
@@ -86,7 +86,7 @@ const Ajax = {
   getVideoList,
   addFolder,
   addFolder,
-  rename,
+  reName,
   getNextFolderReq,
 };
 
