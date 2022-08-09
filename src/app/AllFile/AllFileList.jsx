@@ -189,8 +189,6 @@ export default function AllFileList(props) {
         type: 'UPDATE_SHOW_MODAL',
         payload: false
       })
-    }).catch(err => {
-      console.log(err);
     });
   };
 

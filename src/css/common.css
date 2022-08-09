@@ -6,16 +6,13 @@
 }
 #root .header .logo {
   position: relative;
-  left: -70px;
 }
 #root .header .logo img {
-  width: 142px;
-  height: 68px;
+  width: 150px;
 }
 #root .header .logo .title {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
-  color: #333;
 }
 #root .sider-content-layout {
   background-color: #fff;

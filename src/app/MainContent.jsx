@@ -3,7 +3,6 @@ import {   Outlet} from "react-router-dom";
 import { Layout, Menu } from 'antd';
 import { ConfigProvider } from "antd";
 import zhCN from "antd/es/locale/zh_CN";
-import LOGO from '../img/cloud-sync.svg';
 import { navList } from './BaseData';
 import { MyNavLink } from '../component';
 const { Header, Content, Footer, Sider } = Layout;
@@ -14,9 +13,8 @@ export default function MainContent(props) {
             <ConfigProvider locale={zhCN}>
                 <Layout>
                     <Header className='header'>
-                        <div className='logo'>
-                            <img src={LOGO} alt='' />
-                            <span>壹度网盘</span>
+                        <div className='logo'>                          
+                            <span className='title'>壹度网盘</span>
                         </div>
                     </Header>
                     <Layout className='sider-content-layout'>
