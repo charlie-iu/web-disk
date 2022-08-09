@@ -27,9 +27,9 @@ const getFoldersAndFilesRequest = (data = {}) =>
     data,
   });
 
-const removeFileAndFolderRequest = (params = {}) =>
+const recycleFileAndFolderRequest = (params = {}) =>
   ajax({
-    url: "/netdisk/removeFileAndFolder",
+    url: "/netdisk/recycleFileAndFolder",
     method: "post",
     params,
   });
@@ -80,7 +80,7 @@ const Ajax = {
   loginRequest,
   registerRequest,
   getFoldersAndFilesRequest,
-  removeFileAndFolderRequest,
+  recycleFileAndFolderRequest,
   getPictureList,
   getDocList,
   getVideoList,

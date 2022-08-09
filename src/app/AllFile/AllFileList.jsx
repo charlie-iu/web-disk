@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer } from 'react';
-import { Table, Space, Popconfirm, message } from 'antd';
+import { Table, Space, Popconfirm, message, Button } from 'antd';
 import { CloudDownloadOutlined, DeleteOutlined } from "@ant-design/icons";
 import _ from 'lodash';
 import { Ajax, Utils } from '../../common';
@@ -91,17 +91,35 @@ export default function AllFileList(props) {
     }
     if (type === 'FOLDER') { // 文件夹
       row.folderIds = data.dataId;
-      Ajax.removeFileAndFolderRequest(row).then(res => {
+      Ajax.recycleFileAndFolderRequest(row).then(res => {
         message.success('删除成功');
         initEntry();
       });
     } else {
       row.fileIds = data.dataId;
-      Ajax.removeFileAndFolderRequest(row).then(res => {
+      Ajax.recycleFileAndFolderRequest(row).then(res => {
         message.success('删除成功');
         initEntry();
       });
     }
+  };
+
+  const handleMultipleDelete = () => {
+    const row = {
+      fileIds: state.selectedRowKeys.join(','),
+      folderIds: state.selectedRowKeys.join(','),
+    };
+    Ajax.recycleFileAndFolderRequest(row).then(res => {
+      message.success('删除成功', 1);
+      dispatch({
+        type: 'UPDATE_SELECTEDROWKEYS',
+        payload: []
+      });
+      initEntry();
+    }).catch(err => {
+      message.error('删除失败');
+      return;
+    });
   };
 
   const columns = [{
@@ -173,6 +191,34 @@ export default function AllFileList(props) {
 
   return (
     <>
+      {state.selectedRowKeys.length === 0 ? (
+        <Button
+          size="small"
+          disabled
+          className='multiple-delete'
+          shape='rounded'
+        >
+          批量删除 <DeleteOutlined />
+        </Button>
+      ) : (
+        <Popconfirm
+          title="确认批量删除所选文件?"
+          okText="确认"
+          cancelText="取消"
+          onConfirm={handleMultipleDelete}
+        >
+          <Button
+            type="danger"
+            size="small"
+            className='multiple-delete'
+            shape='rounded'
+          >
+            批量删除 <DeleteOutlined />
+          </Button>
+        </Popconfirm>
+      )
+
+      }
       <Table {...tableProps} />
     </>
   )
