@@ -7,7 +7,7 @@ import Register from "./app/Register";
 import { navList } from './app/BaseData';
 
 function App() {
-  const token = store.get('net_disk_token');
+  const token = store.get('web_disk_token');
   return (
     <>
       <BrowserRouter>
@@ -23,7 +23,7 @@ function App() {
 
               </Route>
             ) : (
-              <Route path="/" element={<Login />} />
+                <Route path="/login" element={<Login />} />
             )
           }
           <Route path="/login" element={<Login />} />

@@ -16,35 +16,35 @@ const navList = [
     icon: <FolderOpenOutlined />,
     key: 1,
     title: "所有文件",
-    path: "allFiles",
+    path: "/allFiles",
     component: <AllFileList />
   },
   {
     icon: <FileImageOutlined />,
     key: 2,
     title: "图片",
-    path: "pic",
+    path: "/pic",
     component: <PictureList/>
   },
   {
     icon: <FileOutlined />,
     key: 3,
     title: "文档",
-    path: "doc",
+    path: "/doc",
     component: <DocList/>
   },
   {
     icon: <VideoCameraOutlined />,
     key: 4,
     title: "视频",
-    path: "video",
+    path: "/video",
     component: <VideoList/>
   },
   {
     icon: <DeleteOutlined />,
     key: 5,
     title: "回收站",
-    path: "recycle",
+    path: "/recycle",
     component: <RecycleBinList/>
   }
 ];

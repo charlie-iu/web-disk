@@ -5,7 +5,7 @@ import { UserOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@a
 import store from 'store';
 import Particles from "react-particles";
 import { loadFull } from "tsparticles";
-import { Ajax } from '../common';
+import axios from "axios";
 import { MyNavLink } from "../component";
 import '../css/login.css';
 
@@ -17,7 +17,7 @@ export default function Login(props) {
     });
     const navigate = useNavigate();
     const handleChange = (e) => {
-        const { name, value} = e.target;
+        const { name, value } = e.target;
         setState(state => {
             return {
                 ...state,
@@ -34,18 +34,17 @@ export default function Login(props) {
             };
         });
     };
-    const onFinish = async (values) => {
-        try {
-            const res = await Ajax.loginRequest(values.username, values.password);
-            const tokenHeader = res.tokenHeader;
-            const tokenBody = res.token;
-            const token = `${tokenHeader} ${tokenBody}`; //中间需要有一个空格分开
-            store.set('net_disk_token', token);
-            navigate('/');
-            message.success('欢迎登录!');
-        } catch (err) {
+    const onFinish = (values) => {
+        const { username, password } = values;
+        axios.post('/api/login/', { username, password }).then(({ data }) => {
+            if (data.code === 0) {
+                store.set('web_disk_token', data.token);
+                navigate('/');
+                message.success('欢迎登录!');
+            }
+        }).catch(err => {
             return Promise.reject(err);
-        }
+        })
     }
     const particlesInit = async (main) => {
         await loadFull(main);

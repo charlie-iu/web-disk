@@ -5,19 +5,26 @@ import Particles from "react-particles";
 import { loadFull } from "tsparticles";
 import { Ajax } from '../common';
 import '../css/register.css';
+import axios from 'axios';
 
 export default function Register(props) {
     const [form] = Form.useForm();
     const navigate = useNavigate();
-    const onFinish = async values => {
-        const {username, password} = values;
-        try {
-            await Ajax.registerRequest(username, password); // 密码应该加密下发
-            message.success('注册成功!',1);
+    const onFinish = (values) => {
+        const { username, password, nickname } = values;
+
+       axios.post('api/register', {username, password, nickname}).then(({data})=>{
+        if(data.code === 0) {
+            message.success(data.message,1);
             navigate('/login');
-        } catch (err) {
-            return Promise.reject(err);
         }
+       }).catch(err =>{
+        if(err.response.data.code === 1) {
+            message.error('用户名已存在！');
+            return;
+        }
+        throw new Error(err);
+       });
     };
     const formItemLayout = {
         labelCol: {
@@ -137,33 +144,15 @@ export default function Register(props) {
                 <Form.Item
                     name="username"
                     label="用户名"
-                    tooltip="登录账号"
-                    rules={[{required: true, message: '请输入您的用户名!', whitespace: true}]}
+                    rules={[{ required: true, message: '请输入您的用户名!', whitespace: true }]}
                 >
                     <Input/>
                 </Form.Item>
                 <Form.Item
                     name="nickname"
                     label="昵称"
-                    tooltip="登录成功后的昵称"
-                    rules={[{required: true, message: '请输入一个昵称!', whitespace: true}]}
-                >
-                    <Input/>
-                </Form.Item>
-
-                <Form.Item
-                    name="email"
-                    label="邮箱"
-                    rules={[
-                        {
-                            type: 'email',
-                            message: '无效邮箱!',
-                        },
-                        {
-                            required: true,
-                            message: '请输入您的邮箱!',
-                        },
-                    ]}
+                    tooltip="登录成功后显示的昵称"
+                    rules={[{ required: true, message: '请输入一个昵称!', whitespace: true }]}
                 >
                     <Input/>
                 </Form.Item>
