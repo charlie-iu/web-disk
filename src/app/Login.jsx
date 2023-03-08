@@ -38,7 +38,7 @@ export default function Login(props) {
         const { username, password } = values;
         axios.post('/api/login/', { username, password }).then(({ data }) => {
             if (data.code === 0) {
-                store.set('web_disk_token', data.token);
+                store.set('web_disk_token', 'Bearer ' + data.token);
                 navigate('/');
                 message.success('欢迎登录!');
             }
