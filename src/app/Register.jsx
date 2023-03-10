@@ -3,9 +3,8 @@ import {Form, Input, Checkbox, Button, message,} from 'antd';
 import {useNavigate} from 'react-router-dom';
 import Particles from "react-particles";
 import { loadFull } from "tsparticles";
-import { Ajax } from '../common';
-import '../css/register.css';
-import axios from 'axios';
+import ajax from '../common/Ajax';
+import '../css/register.less';
 
 export default function Register(props) {
     const [form] = Form.useForm();
@@ -13,7 +12,7 @@ export default function Register(props) {
     const onFinish = (values) => {
         const { username, password, nickname } = values;
 
-       axios.post('api/register', {username, password, nickname}).then(({data})=>{
+        ajax.post('/register', { username, password, nickname }).then(({ data }) => {
         if(data.code === 0) {
             message.success(data.message,1);
             navigate('/login');

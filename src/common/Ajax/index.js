@@ -1,93 +1,34 @@
-import ajax from "./Ajax";
+import axios from 'axios';
+import store from 'store';
 
-const loginRequest = (username = "", password = "") =>
-  ajax({
-    url: "/user/login",
-    method: "post",
-    data: {
-      username: username,
-      password: password,
-    },
-  });
+// 创建实例
+const service = axios.create({
+  baseURL: 'http://localhost:3000/api',
+  timeout: 5000
+});
 
-const registerRequest = (username = "", password = "") =>
-  ajax({
-    url: "/user/register",
-    method: "post",
-    data: {
-      username: username,
-      password: password,
-    },
-  });
+// 添加请求拦截器
+service.interceptors.request.use(config => {
+  const token = store.get('web_disk_token');
+  if (token) {
+    config.headers["Authorization"] = token;
+  }
+  return config;
+}, err => {
+  // message.error(err);
+  return Promise.reject(err);
+});
 
-const getFoldersAndFilesRequest = (data = {}) =>
-  ajax({
-    url: "/netdisk/nextList",
-    method: "post",
-    data,
-  });
+// 响应拦截器
+service.interceptors.response.use(res => {
+  if (res.data.code !== 0) {
+    return Promise.reject('error');
+  } else {
+    return res.data;
+  }
+}, err => {
+  // message.error(err);
+  return Promise.reject(err);
+});
 
-const getAllFilesRequest = (params = {}) =>
-  ajax({
-    url: "/api/getAllFiles",
-    method: "post",
-    params,
-  });
-
-const getPictureList = (data = {}) =>
-  ajax({
-    url: "/netdisk/nextList?type=1",
-    method: "post",
-    data: {},
-  });
-
-const getDocList = (data = {}) =>
-  ajax({
-    url: "/netdisk/nextList?type=2",
-    method: "post",
-    data,
-  });
-
-const getVideoList = (data = {}) =>
-  ajax({
-    url: "/netdisk/nextList",
-    method: "post",
-    data,
-  });
-
-const addFolder = (data) =>
-  ajax({
-    url: "/netdisk/addFolder",
-    method: "post",
-    data,
-  });
-
-const reName = (params = {}) =>
-  ajax({
-    url: "/netdisk/reNameFolder",
-    method: "post",
-    params,
-  });
-
-const getNextFolderReq = (data = {}) =>
-  ajax({
-    url: "/netdisk/nextList",
-    method: "post",
-    data,
-  });
-
-const Ajax = {
-  loginRequest,
-  registerRequest,
-  getFoldersAndFilesRequest,
-  // recycleFileAndFolderRequest,
-  getPictureList,
-  getDocList,
-  getVideoList,
-  addFolder,
-  addFolder,
-  reName,
-  getNextFolderReq,
-};
-
-export default Ajax;
+export default service;

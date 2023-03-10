@@ -1,32 +1,55 @@
-@mainColor: #bae7ff;
+@text-color-white: #fff;
+
 #root {
   height: 100%;
-  .header {
-    background-color: @mainColor;
 
-    .logo {
-      position: relative;
-      img {
-        width: 150px;
+  .header {
+    background-color: #7546c9;
+
+    font-family: Arial, sans-serif;
+
+    .box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .left {
+        text-align: left;
+
+        .title {
+          color: #fff;
+          font-size: 24px;
+          letter-spacing: 4px;
+          text-transform: uppercase;
+        }
+        .icon {
+          font-size: 32px;
+          transform: translate(0, 4px);
+        }
       }
 
-      .title {
-        font-size: 28px;
-        font-weight: bold;
+      .right {
+        text-align: right;
+
+        .username,
+        .logout {
+          color: @text-color-white;
+          padding-left: 8px;
+        }
       }
     }
   }
 
   .sider-content-layout {
     background-color: #fff;
-    
+
     .sider {
       height: 100%;
       margin-right: 8px;
     }
   }
-.multiple-delete {
-  margin: 8px;
-}
+  .multiple-delete {
+    margin: 8px;
+  }
 
 }

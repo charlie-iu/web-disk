@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Pagination } from 'antd';
-import axios from 'axios';
+import ajax from '../../common/Ajax';
 import UploadButton from '../../component/UploadButton';
 
 const PAGE_SIZE = 10; // 每页展示10条数据
@@ -17,12 +17,13 @@ const FileList = () => {
   // 获取文件列表数据
   const fetchData = async (page) => {
     try {
-      const response = await axios.post('/api/getAllFiles', { page, limit: PAGE_SIZE });
-      setData(response.data.data);
-      setTotal(response.data.total);
+      const res = await ajax.post('/getAllFiles', { page, limit: PAGE_SIZE });
+      setTotal(res.total);
+      setData(res.data);
     } catch (error) {
-      console.error(error);
+      throw new Error(error);
     }
+
   };
 
   // 处理页码改变事件
@@ -72,7 +73,12 @@ const FileList = () => {
       <div style={{ marginTop: 8 }}>
         <UploadButton />
       </div>
-      <Table dataSource={data} columns={columns} pagination={false} />
+      <Table
+        dataSource={data}
+        columns={columns}
+        pagination={false}
+        rowKey='id'
+      />
       <Pagination
         style={{ marginTop: '16px', textAlign: 'right' }}
         current={page}

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Checkbox, message } from 'antd';
 import { UserOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import store from 'store';
 import Particles from "react-particles";
 import { loadFull } from "tsparticles";
-import axios from "axios";
+import ajax from "../common/Ajax";
 import { MyNavLink } from "../component";
-import '../css/login.css';
+import '../css/login.less';
 
 export default function Login(props) {
     const [state, setState] = useState({
@@ -36,10 +36,11 @@ export default function Login(props) {
     };
     const onFinish = (values) => {
         const { username, password } = values;
-        axios.post('/api/login/', { username, password }).then(({ data }) => {
+        ajax.post('/login', { username, password }).then(data => {
             if (data.code === 0) {
                 store.set('web_disk_token', 'Bearer ' + data.token);
-                navigate('/');
+                store.set('username', username);
+                navigate('/allFiles');
                 message.success('欢迎登录!');
             }
         }).catch(err => {
