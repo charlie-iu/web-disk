@@ -16,7 +16,7 @@ const navList = [
     icon: <FolderOpenOutlined />,
     key: 1,
     title: "所有文件",
-    path: "/allFiles",
+    path: "/all",
     component: <AllFileList />
   },
   {

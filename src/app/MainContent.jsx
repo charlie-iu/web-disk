@@ -9,7 +9,7 @@ import ajax from '../common/Ajax';
 import { navList } from './BaseData';
 import { MyNavLink } from '../component';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 
 export default function MainContent(props) {
     const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -74,7 +74,7 @@ export default function MainContent(props) {
                             <Menu mode='inline' defaultSelectedKeys={['1']}>
                                 {navList.map((item, index) => {
                                     return (
-                                        <Menu.Item key={item.key} icon={item.icon}>
+                                        <Menu.Item key={item.key + index} icon={item.icon}>
                                             <MyNavLink to={item.path}>{item.title}</MyNavLink>
                                         </Menu.Item>
                                     )

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Checkbox, message } from 'antd';
 import { UserOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import store from 'store';
@@ -15,7 +14,6 @@ export default function Login(props) {
         password: '',
         rememberMe: true,
     });
-    const navigate = useNavigate();
     const handleChange = (e) => {
         const { name, value } = e.target;
         setState(state => {
@@ -40,7 +38,7 @@ export default function Login(props) {
             if (data.code === 0) {
                 store.set('web_disk_token', 'Bearer ' + data.token);
                 store.set('username', username);
-                navigate('/allFiles');
+                window.location.href = '/all';
                 message.success('欢迎登录!');
             }
         }).catch(err => {
@@ -177,7 +175,7 @@ export default function Login(props) {
                     <Checkbox checked={state.rememberMe} onChange={handleCheckChange}>
                         记住我
                     </Checkbox>
-                    <a href="javascript:void 0;" className="forget">
+                    <a href="#" className="forget">
                         忘记密码？
                     </a>
                 </Form.Item>

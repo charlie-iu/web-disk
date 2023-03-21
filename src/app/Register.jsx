@@ -1,6 +1,6 @@
 import React from 'react';
-import {Form, Input, Checkbox, Button, message,} from 'antd';
-import {useNavigate} from 'react-router-dom';
+import { Form, Input, Checkbox, Button, message, } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import Particles from "react-particles";
 import { loadFull } from "tsparticles";
 import ajax from '../common/Ajax';
@@ -9,21 +9,16 @@ import '../css/register.less';
 export default function Register(props) {
     const [form] = Form.useForm();
     const navigate = useNavigate();
-    const onFinish = (values) => {
+    const onFinish = async (values) => {
         const { username, password, nickname } = values;
-
-        ajax.post('/register', { username, password, nickname }).then(({ data }) => {
-        if(data.code === 0) {
-            message.success(data.message,1);
+        try {
+            const data = await ajax.post('/register', { username, password, nickname });
+            message.success(data.message, 1);
             navigate('/login');
-        }
-       }).catch(err =>{
-        if(err.response.data.code === 1) {
-            message.error('用户名已存在！');
+        } catch (err) {
+            message.error(err.response.data.message);
             return;
         }
-        throw new Error(err);
-       });
     };
     const formItemLayout = {
         labelCol: {
@@ -132,7 +127,7 @@ export default function Register(props) {
     };
     return (
         <div className='register-box'>
-            <Form           
+            <Form
                 {...formItemLayout}
                 form={form}
                 name="register"
@@ -145,7 +140,7 @@ export default function Register(props) {
                     label="用户名"
                     rules={[{ required: true, message: '请输入您的用户名!', whitespace: true }]}
                 >
-                    <Input/>
+                    <Input />
                 </Form.Item>
                 <Form.Item
                     name="nickname"
@@ -153,7 +148,7 @@ export default function Register(props) {
                     tooltip="登录成功后显示的昵称"
                     rules={[{ required: true, message: '请输入一个昵称!', whitespace: true }]}
                 >
-                    <Input/>
+                    <Input />
                 </Form.Item>
 
                 <Form.Item
@@ -167,7 +162,7 @@ export default function Register(props) {
                     ]}
                     hasFeedback
                 >
-                    <Input.Password/>
+                    <Input.Password />
                 </Form.Item>
 
                 <Form.Item
@@ -180,7 +175,7 @@ export default function Register(props) {
                             required: true,
                             message: '请再次输入您的密码!',
                         },
-                        ({getFieldValue}) => ({
+                        ({ getFieldValue }) => ({
                             validator(_, value) {
                                 if (!value || getFieldValue('password') === value) {
                                     return Promise.resolve();
@@ -190,7 +185,7 @@ export default function Register(props) {
                         }),
                     ]}
                 >
-                    <Input.Password/>
+                    <Input.Password />
                 </Form.Item>
                 <Form.Item
                     name="agreement"
