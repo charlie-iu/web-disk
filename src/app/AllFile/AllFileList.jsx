@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Pagination } from 'antd';
 import ajax from '../../common/Ajax';
 import UploadButton from '../../component/UploadButton';
+// import CircularJSON from 'circular-json';
 
 const PAGE_SIZE = 10; // 每页展示10条数据
 
@@ -31,9 +32,54 @@ const FileList = () => {
     setPage(newPage);
   };
 
+  // 下载
+  // const handleDownload = async (fileName) => {
+  //   try {
+  //     const response = await ajax.post('/download', { fileName }, { responseType: 'blob' });
+  //     const url = window.URL.createObjectURL(new Blob([response.data]));
+  //     const link = document.createElement('a');
+  //     link.href = url;
+  //     link.setAttribute('download', fileName);
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     URL.revokeObjectURL(url); // 释放URL对象
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  // const handleDownload = (fileName) => {
+  //   const downloadLink = `${window.location.origin}/api/download?fileName=${fileName}`;
+  //   window.open(downloadLink, '__blank');
+  // };
+  const handleDownload = async (record) => {
+    try {
+      const api = window.location.origin + '/api';
+      const url = `${api}/download?id=${record.id}&timestamp=${Date.now()}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        responseType: 'arraybuffer',
+      });
+
+      const arrayBuffer = await response.arrayBuffer();
+      const blob = new Blob([arrayBuffer]);
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', record.name);
+      document.body.appendChild(link);
+      link.click();
+      URL.revokeObjectURL(downloadUrl); // 释放URL对象
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+
   const columns = [
     {
       title: '序号',
+      width: '60px',
       dataIndex: 'index',
       key: 'index',
       render: (text, record, index) => <span>{index + 1}</span>,
@@ -66,6 +112,18 @@ const FileList = () => {
         return `${size.toFixed(2)} ${units[unitIndex]}`;
       },
     },
+    {
+      title: '操作',
+      dataIndex: 'id',
+      key: 'action',
+      render: (text, record) => {
+        return (
+          <a href="#" onClick={() => { handleDownload(record) }}>
+            下载
+          </a>
+        )
+      }
+    }
   ];
 
   return (

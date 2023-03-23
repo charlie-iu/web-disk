@@ -15,7 +15,8 @@ const UploadFile = () => {
             path: 'D:/uploads'
         },
         headers: {
-            Authorization: `${token}`,
+            'Authorization': `${token}`,
+            // 'Content-Type': 'multipart/form-data'
         },
         showUploadList: false,
         onChange(info) {
