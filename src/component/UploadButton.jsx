@@ -7,16 +7,24 @@ const token = store.get('web_disk_token');
 
 const UploadFile = () => {
 
+    const getBoundary = () => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let boundary = '';
+        for (let i = 0; i < 32; i++) {
+            boundary += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return boundary;
+    }
+
     const props = {
         name: 'file',
         multiple: true,
         action: 'http://localhost:3000/api/upload',
         data: {
-            path: 'D:/uploads'
+            path: 'D:\\uploads'
         },
         headers: {
             'Authorization': `${token}`,
-            // 'Content-Type': 'multipart/form-data'
         },
         showUploadList: false,
         onChange(info) {
@@ -32,6 +40,7 @@ const UploadFile = () => {
                     setTimeout(() => {
                         window.location.reload();
                     }, 2000);
+                    break;
                 default:
                     break;
             }

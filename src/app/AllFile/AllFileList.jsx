@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Pagination } from 'antd';
+import { Table, Pagination, Space, Popconfirm, message } from 'antd';
 import ajax from '../../common/Ajax';
 import UploadButton from '../../component/UploadButton';
-// import CircularJSON from 'circular-json';
+import axios from 'axios';
 
 const PAGE_SIZE = 10; // 每页展示10条数据
 
@@ -10,7 +10,6 @@ const FileList = () => {
   const [data, setData] = useState([]); // 所有文件列表
   const [page, setPage] = useState(1); // 当前页码
   const [total, setTotal] = useState(0); // 总数据量
-
   useEffect(() => {
     fetchData(page);
   }, [page]);
@@ -33,48 +32,38 @@ const FileList = () => {
   };
 
   // 下载
-  // const handleDownload = async (fileName) => {
-  //   try {
-  //     const response = await ajax.post('/download', { fileName }, { responseType: 'blob' });
-  //     const url = window.URL.createObjectURL(new Blob([response.data]));
-  //     const link = document.createElement('a');
-  //     link.href = url;
-  //     link.setAttribute('download', fileName);
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     URL.revokeObjectURL(url); // 释放URL对象
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-  // const handleDownload = (fileName) => {
-  //   const downloadLink = `${window.location.origin}/api/download?fileName=${fileName}`;
-  //   window.open(downloadLink, '__blank');
-  // };
   const handleDownload = async (record) => {
-    try {
-      const api = window.location.origin + '/api';
-      const url = `${api}/download?id=${record.id}&timestamp=${Date.now()}`;
-      const response = await fetch(url, {
-        method: 'GET',
-        responseType: 'arraybuffer',
-      });
-
-      const arrayBuffer = await response.arrayBuffer();
-      const blob = new Blob([arrayBuffer]);
-      const downloadUrl = URL.createObjectURL(blob);
+    axios({
+      url: `http://localhost:3000/api/download/${record.id}`,
+      method: 'GET',
+      responseType: 'blob',
+    }).then((response) => {
+      console.log(response);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.setAttribute('download', record.name);
+      link.href = url;
+      link.setAttribute('download', record.name); // 由于Content-Disposition已设置文件名，此处设置的文件名不重要
       document.body.appendChild(link);
       link.click();
-      URL.revokeObjectURL(downloadUrl); // 释放URL对象
-    } catch (error) {
-      console.error(error);
-    }
+      document.body.removeChild(link);
+    });
   };
 
-
+  // 删除
+  const handleDelete = (record) => {
+    const id = record.id;
+    if (id) {
+      try {
+        ajax.post('/delete', { id }).then(() => {
+          fetchData(page).then((res) => {
+            message.success('删除成功');
+          });
+        });
+      } catch (error) {
+        throw new Error(error);
+      }
+    }
+  };
 
   const columns = [
     {
@@ -82,7 +71,7 @@ const FileList = () => {
       width: '60px',
       dataIndex: 'index',
       key: 'index',
-      render: (text, record, index) => <span>{index + 1}</span>,
+      render: (text, record, index) => index + 1
     },
     {
       title: '文件名',
@@ -118,9 +107,26 @@ const FileList = () => {
       key: 'action',
       render: (text, record) => {
         return (
-          <a href="#" onClick={() => { handleDownload(record) }}>
-            下载
-          </a>
+          <Space>
+            <Popconfirm
+              title="确认下载？"
+              onConfirm={handleDownload.bind(null, record)}
+              okText="确认"
+              cancelText="取消"
+            >
+              <a href="#"> 下载</a>
+            </Popconfirm>
+
+            <Popconfirm
+              title="确认删除？"
+              onConfirm={handleDelete.bind(null, record)}
+              okText="确认"
+              cancelText="取消"
+            >
+              <a href="#">删除</a>
+            </Popconfirm>
+
+          </Space>
         )
       }
     }
