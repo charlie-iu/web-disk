@@ -554,6 +554,7 @@ module.exports = function (webpackEnv) {
                   lessOptions: { // 如果使用less-loader@5，请移除 lessOptions 这一级直接配置选项。
                     modifyVars: {
                       'primary-color': '#7546c9',
+                      'icon-color': '#7546c9',
                       'link-color': '#7546c9',
                       'border-radius-base': '2px',
                       'text-color': 'rgba(0, 0, 0, 0.65)', // 主文本色

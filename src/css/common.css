@@ -1,0 +1,43 @@
+#root {
+  height: 100%;
+}
+#root .header {
+  background-color: #7546c9;
+  font-family: Arial, sans-serif;
+}
+#root .header .box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#root .header .box .left {
+  text-align: left;
+}
+#root .header .box .left .title {
+  color: #fff;
+  font-size: 24px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+#root .header .box .left .icon {
+  font-size: 32px;
+  transform: translate(0, 4px);
+}
+#root .header .box .right {
+  text-align: right;
+}
+#root .header .box .right .username,
+#root .header .box .right .logout {
+  color: #fff;
+  padding-left: 8px;
+}
+#root .sider-content-layout {
+  background-color: #fff;
+}
+#root .sider-content-layout .sider {
+  height: 100%;
+  margin-right: 8px;
+}
+#root .multiple-delete {
+  margin: 8px;
+}

@@ -5,17 +5,8 @@ import store from 'store';
 const { Dragger } = Upload;
 const token = store.get('web_disk_token');
 
-const UploadFile = () => {
-
-    const getBoundary = () => {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let boundary = '';
-        for (let i = 0; i < 32; i++) {
-            boundary += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return boundary;
-    }
-
+const UploadFile = (P) => {
+    
     const props = {
         name: 'file',
         multiple: true,
@@ -37,9 +28,7 @@ const UploadFile = () => {
                     return false;
                 case 'done':
                     message.success(`${info.file.name} 上传成功！.`);
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
+                    P.fetchData();
                     break;
                 default:
                     break;

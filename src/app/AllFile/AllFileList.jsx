@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Pagination, Space, Popconfirm, message } from 'antd';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Table, Pagination, Space, Popconfirm, message, Input } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
 import ajax from '../../common/Ajax';
-import UploadButton from '../../component/UploadButton';
-import axios from 'axios';
+import { UploadFile, Download } from '../../component/';
 
 const PAGE_SIZE = 10; // 每页展示10条数据
 
@@ -10,12 +10,23 @@ const FileList = () => {
   const [data, setData] = useState([]); // 所有文件列表
   const [page, setPage] = useState(1); // 当前页码
   const [total, setTotal] = useState(0); // 总数据量
+  const [renameValue, setReNameValue] = useState(''); // 重命名
+  // const [focus, setFocus] = useState(false);
+  // const inputRef = useRef(null);
+
   useEffect(() => {
     fetchData(page);
   }, [page]);
 
+  // useEffect(() => {
+  //   if (focus) {
+  //     inputRef.current?.focus();
+  //   }
+  // }, [focus]);
+
+
   // 获取文件列表数据
-  const fetchData = async (page) => {
+  const fetchData = useCallback(async (page) => {
     try {
       const res = await ajax.post('/getAllFiles', { page, limit: PAGE_SIZE });
       setTotal(res.total);
@@ -24,29 +35,11 @@ const FileList = () => {
       throw new Error(error);
     }
 
-  };
+  }, [page]);
 
   // 处理页码改变事件
   const handlePageChange = (newPage) => {
     setPage(newPage);
-  };
-
-  // 下载
-  const handleDownload = async (record) => {
-    axios({
-      url: `http://localhost:3000/api/download/${record.id}`,
-      method: 'GET',
-      responseType: 'blob',
-    }).then((response) => {
-      console.log(response);
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', record.name); // 由于Content-Disposition已设置文件名，此处设置的文件名不重要
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    });
   };
 
   // 删除
@@ -64,6 +57,30 @@ const FileList = () => {
       }
     }
   };
+
+  // 重命名
+  const handleReName = (e) => {
+    const { value } = e.target;
+    setReNameValue(value);
+  };
+
+  const confirmReName = async (record) => {
+    const payload = {
+      id: record.id,
+      newName: renameValue
+    };
+    try {
+      const res = await ajax.post('/rename', payload);
+      message.success(res.message);
+      fetchData();
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  // const cancelReName = () => {
+  //   setFocus(false);
+  // };
 
   const columns = [
     {
@@ -109,14 +126,31 @@ const FileList = () => {
         return (
           <Space>
             <Popconfirm
-              title="确认下载？"
-              onConfirm={handleDownload.bind(null, record)}
+              title={
+                <Input
+                  value={renameValue}
+                  onChange={handleReName}
+                // ref={inputRef}
+                />
+              }
+              icon={<EditOutlined style={{ fontSize: 18, paddingTop: 8 }} />}
+              onConfirm={confirmReName.bind(null, record)}
+              // onCancel={cancelReName}
               okText="确认"
               cancelText="取消"
+            // onOpenChange={(o) => {
+            //   if (o) {
+            //     setFocus(true);
+            //   }
+            // }}
             >
-              <a href="#"> 下载</a>
+              <a href="#"
+              // onClick={() => { setFocus(true) }}
+              >
+                重命名
+              </a>
             </Popconfirm>
-
+            <Download record={record} />
             <Popconfirm
               title="确认删除？"
               onConfirm={handleDelete.bind(null, record)}
@@ -135,7 +169,7 @@ const FileList = () => {
   return (
     <>
       <div style={{ marginTop: 8 }}>
-        <UploadButton />
+        <UploadFile fetchData={fetchData} />
       </div>
       <Table
         dataSource={data}
