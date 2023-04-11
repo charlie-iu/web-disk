@@ -6,10 +6,10 @@ import {
   VideoCameraOutlined,
   DeleteOutlined
 } from "@ant-design/icons";
-import AllFileList from "./AllFile/AllFileList";
-import DocList from "./Doc/DocList";
-import PictureList from "./Picture/PictureList";
-import VideoList from "./Video/VideoList.jsx";
+import AllFileList from "./AllFile";
+import DocList from "./Doc";
+import PictureList from "./Picture";
+import Media from "./Media";
 import RecycleBinList from "./RecycleBin/RecycleBinList";
 const navList = [
   {
@@ -36,9 +36,9 @@ const navList = [
   {
     icon: <VideoCameraOutlined />,
     key: 4,
-    title: "视频",
-    path: "/video",
-    component: <VideoList/>
+    title: "音视频",
+    path: "/Media",
+    component: <Media />
   },
   {
     icon: <DeleteOutlined />,

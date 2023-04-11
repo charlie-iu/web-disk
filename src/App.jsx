@@ -5,7 +5,6 @@ import MainContent from "../src/app/MainContent";
 import Login from "./app/Login";
 import Register from "./app/Register";
 import { navList } from './app/BaseData';
-import AllFileList from './app/AllFile/AllFileList';
 
 function App() {
   const token = store.get('web_disk_token');
